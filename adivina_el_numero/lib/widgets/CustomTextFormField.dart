@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 class CustomTextFormField extends StatelessWidget {
   final String hintText;
   final double width;
@@ -8,9 +10,8 @@ class CustomTextFormField extends StatelessWidget {
   final Alignment alignment;
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry margin;
-    
+  final Function onSubmit;
 
-  // Constructor del widget, que inicializa los parámetros requeridos
   CustomTextFormField({
     required this.hintText,
     required this.width,
@@ -19,31 +20,37 @@ class CustomTextFormField extends StatelessWidget {
     this.alignment = Alignment.center,
     this.padding = EdgeInsets.zero,
     this.margin = EdgeInsets.zero,
+    required this.onSubmit,
   });
 
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: alignment, // Alinea el widget según el parámetro `alignment`
+      alignment: alignment,
       child: Container(
-        width: width, // Establece el ancho del contenedor según el parámetro `width`
-        height: height, // Establece la altura del contenedor según el parámetro `height`
-        padding: padding, // Aplica el padding al contenedor
-        margin: margin, // Aplica el margin al contenedor
-        child: TextFormField(
-          controller: controller, // Controlador para manejar el texto del campo
-          keyboardType: TextInputType.number, // Define el tipo de teclado como numérico
-          style: TextStyle(color: Colors.white), // Estilo del texto dentro del campo, color blanco
+        width: width,
+        height: height,
+        padding: padding,
+        margin: margin,
+        child: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          onSubmitted: (value) => onSubmit(),
+          style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            hintText: hintText, // Texto de pista del campo de entrada
-            hintStyle: TextStyle(color: Colors.white70), // Estilo del texto de pista, color blanco con opacidad
+            hintText: hintText,
+            hintStyle: TextStyle(color: Colors.white70),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white), // Borde blanco cuando el campo está habilitado
+              borderSide: BorderSide(color: Colors.white),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white), // Borde blanco cuando el campo está enfocado
+              borderSide: BorderSide(color: Colors.white),
             ),
           ),
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'^\d+$')),
+            LengthLimitingTextInputFormatter(4),
+          ],
         ),
       ),
     );
